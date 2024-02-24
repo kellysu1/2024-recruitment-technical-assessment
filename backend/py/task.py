@@ -15,9 +15,11 @@ Task 1
 def leafFiles(files: list[File]) -> list[str]:
     parents = []
     ans = []
+    # create a list of all the parents by going through each file
     for file in files: 
         if file.parent not in parents:
             parents.append(file.parent)
+    # if the file id is not in the parents list, append to ans list 
     for file in files:
         if file.id not in parents:
             ans.append(file.name)
@@ -30,15 +32,19 @@ Task 2
 """
 def kLargestCategories(files: list[File], k: int) -> list[str]:
     category_map = {}; 
+    # go through each file and it's categories and add it to the map, 
+    # incrementing everytime there is an occurance in the list
     for file in files:
         for category in file.categories:
             if category not in category_map:
                 category_map[category]= 1
             else:
                 category_map[category] += 1
-
+    # sort the files by the neg value so its decreasing and if they are the same,
+    # sort using alphabetical order of the key (category)
     sorted_files = sorted(category_map.items(), key=lambda x: (-x[1], x[0]))
 
+    # return the key (category) for k of sorted_files
     return [category[0] for category in sorted_files[:k]]
 
 
@@ -47,6 +53,8 @@ def kLargestCategories(files: list[File], k: int) -> list[str]:
 Task 3
 """
 
+# function that recurses through the file and its children and
+# adds up the total size if no more children
 def recurse(adjacency, file):
     if file.id not in adjacency or len(adjacency[file.id]) == 0:
         return file.size
@@ -58,8 +66,9 @@ def recurse(adjacency, file):
     return total
         
 
-
+# function to figure out the largest file size
 def largestFileSize(files: list[File]) -> int:
+    # map with key = parent, value = all its children
     mp = {}
     for file in files:
         if file.parent in mp:
@@ -68,6 +77,8 @@ def largestFileSize(files: list[File]) -> int:
             mp[file.parent] = [file]
     
     ans = 0
+    # go through each file and recurse through all its children and compare
+    # to find the one with the largest size 
     for file in files:
         ans = max(ans, recurse(mp, file))
 
